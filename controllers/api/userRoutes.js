@@ -56,6 +56,8 @@ router.post('/logout', (req, res) => {
     req.session.destroy(() => {
       res.status(204).end();
     });
+    
+    res.json({ message: "You have logged out"});
   } else {
     res.status(404).end();
   }

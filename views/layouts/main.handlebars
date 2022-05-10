@@ -12,16 +12,25 @@
     <div class="flex-column justify-space-around">
       <header class="display-flex justify-space-between align-center p-2">
         <nav>
+          <ul>
+            <li>
+              <a href="/">Home</a>
+            </li>
+            <!-- Conditionally render login or logout links -->
+            {{#if logged_in}}
+            <li>
+              <a href="#">Dashboard</a>
+            </li>
+            <li>
+                <button class="no-button" id="logout">Logout</button>
+            </li>
+            {{else}}
+            <a href="/login">Login</a>
+            {{/if}}
+          </ul>
           <h1>
             <a href="/">The Tech Blog</a>
           </h1>
-          <!-- Conditionally render login or logout links -->
-          {{#if logged_in}}
-          <a href="/profile">profile</a> |
-          <button class="no-button" id="logout">logout</button>
-          {{else}}
-          <a href="/login">login</a>
-          {{/if}}
         </nav>
       </header>
       <main class="container container-fluid mt-5">

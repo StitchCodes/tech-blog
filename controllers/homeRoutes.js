@@ -1,16 +1,16 @@
 const router = require('express').Router();
-const { Posts, User, Post } = require('../models');
+const { Post, User} = require('../models');
 const withAuth = require('../utils/auth');
 
-// Get all projects and JOIN with user
+// Get all posts and JOIN with user
 router.get('/', async (req, res) => {
   try {
-    const postData = await Posts.findAll({
+    const postData = await Post.findAll({
       include: [{ model: User, attributes: ['name']}]
     })
 
     const posts = postData.map((post) => post.get({ plan: true}));
-
+    console.log(posts);
     res.render('homepage', {
       posts,
       logged_in: req.session.logged_in
@@ -24,7 +24,7 @@ router.get('/', async (req, res) => {
 // query single post
 router.get('/post/:id', async (req, res) => {
   try {
-    const postData = await Posts.findByPk( req.params.id, {
+    const postData = await Post.findByPk( req.params.id, {
       include: [{ model: User, attributes: ['name']}]
     });
 
@@ -40,34 +40,33 @@ router.get('/post/:id', async (req, res) => {
   }
 
   // Find the logged in user based on the session ID
-  router.get('/profile', withAuth, async (req, res) => {
+  router.get('/dashboard', withAuth, async (req, res) => {
     try {
       const userData = await User.findByPk(req.session.user_id, {
         attributes: { exclude: ['password'] },
-        include: [{ model: Posts }],
+        include: [{ model: Post }],
       });
   
       const user = userData.get({ plain: true });
   
-      res.render('profile', {
+      res.render('dashboard', {
         ...user,
         logged_in: true
       });
     } catch (err) {
       res.status(500).json(err);
     }
-
-    // If the user is already logged in, redirect the request to another route
-    router.get('/login', (req, res) => {
-      if (req.session.logged_in) {
-        res.redirect('/profile');
-        return;
-      }
-    
-      res.render('login');
-    });
   });
+});
 
+// If the user is already logged in, redirect the request to another route
+router.get('/login', (req, res) => {
+  if (req.session.logged_in) {
+    res.redirect('/dashboard');
+    return;
+  }
+
+  res.render('login');
 });
 
 module.exports = router;

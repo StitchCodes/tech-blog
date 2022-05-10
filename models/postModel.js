@@ -12,7 +12,10 @@ Posts.init(
       primaryKey: true,
       autoIncrement: true
     },
-    description: {
+    title: {
+      type: DataTypes.STRING
+    },
+    text: {
       type: DataTypes.STRING
     },
     date_created: {

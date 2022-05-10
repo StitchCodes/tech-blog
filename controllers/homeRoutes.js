@@ -10,8 +10,7 @@ router.get('/', async (req, res) => {
     })
 
     const posts = postData.map((post) => post.get({ plan: true}));
-    console.log(posts);
-    res.render('homepage', {
+    res.render('postpreview', {
       posts,
       logged_in: req.session.logged_in
     });
@@ -37,26 +36,26 @@ router.get('/post/:id', async (req, res) => {
   }
   catch (err) {
     res.status(500).json(err);
-  }
+  }  
+});
 
-  // Find the logged in user based on the session ID
-  router.get('/dashboard', withAuth, async (req, res) => {
-    try {
-      const userData = await User.findByPk(req.session.user_id, {
-        attributes: { exclude: ['password'] },
-        include: [{ model: Post }],
-      });
-  
-      const user = userData.get({ plain: true });
-  
-      res.render('dashboard', {
-        ...user,
-        logged_in: true
-      });
-    } catch (err) {
-      res.status(500).json(err);
-    }
-  });
+// Find the logged in user based on the session ID
+router.get('/dashboard', withAuth, async (req, res) => {
+  try {
+    const userData = await User.findByPk(req.session.user_id, {
+      attributes: { exclude: ['password'] },
+      include: [{ model: Post }],
+    });
+
+    const user = userData.get({ plain: true });
+
+    res.render('dashboard', {
+      ...user,
+      logged_in: true
+    });
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 // If the user is already logged in, redirect the request to another route
